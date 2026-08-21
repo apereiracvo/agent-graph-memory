@@ -1,0 +1,56 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    environment:
+      BROWSER: "1"
+      FALKORDB_PASSWORD: ${FALKORDB_PASSWORD:-}
+    ports:
+      - "6379:6379"
+      - "3000:3000"
+    volumes:
+      - falkordb-data:/var/lib/falkordb/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  graphiti-mcp:
+    image: zepai/knowledge-graph-mcp:1.0.2-standalone
+    profiles: ["mcp"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      CONFIG_PATH: /app/mcp/config/config.yaml
+      FALKORDB_URI: redis://falkordb:6379
+      FALKORDB_DATABASE: ${GRAPHITI_GROUP_ID:-agent_graph_memory}
+      GRAPHITI_GROUP_ID: ${GRAPHITI_GROUP_ID:-agent_graph_memory}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_API_URL: ${OPENAI_API_URL:-https://api.openai.com/v1}
+      SEMAPHORE_LIMIT: ${SEMAPHORE_LIMIT:-5}
+    volumes:
+      - ./config/graphiti-mcp.yaml:/app/mcp/config/config.yaml:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      falkordb:
+        condition: service_healthy
+
+  tools:
+    build: .
+    profiles: ["tools"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      FALKORDB_HOST: falkordb
+      PYTHONPATH: /workspace/src
+    volumes:
+      - .:/workspace
+    depends_on:
+      falkordb:
+        condition: service_healthy
+
+volumes:
+  falkordb-data:
