@@ -137,6 +137,10 @@ LLM provider, Graphiti selects its OpenAI reranker and currently uses `gpt-4.1-n
 Changing `MODEL_NAME` does not change that reranker model. Provider selection and embedding
 dimensions are configured in `config/graphiti-mcp.yaml`.
 
+Graphiti `0.29.3` predates `gpt-5.6` and otherwise sends the unsupported reasoning effort
+`minimal`. The MCP container startup applies a one-line compatibility patch that selects `none`
+for the `gpt-5.6` family. Remove it once an upstream release recognizes these models.
+
 ## Development
 
 ```bash

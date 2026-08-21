@@ -32,6 +32,13 @@ services:
     environment:
       CONFIG_PATH: /app/mcp/config/config.yaml
       FALKORDB_URI: redis://falkordb:6379
+    command:
+      - sh
+      - -c
+      - >-
+        sed -i "s/model.startswith('gpt-5.5')/model.startswith(('gpt-5.5', 'gpt-5.6'))/"
+        /app/mcp/src/services/factories.py &&
+        uv run --no-sync main.py
     volumes:
       - ./config/graphiti-mcp.yaml:/app/mcp/config/config.yaml:ro
     ports:
