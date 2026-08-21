@@ -18,7 +18,13 @@ services:
       retries: 10
 
   graphiti-mcp:
-    image: zepai/knowledge-graph-mcp:1.0.2-standalone
+    image: agent-graphiti-mcp:993e081
+    build:
+      context: https://github.com/getzep/graphiti.git#993e081a6d7948a0d8851c12a5fbdbeb49fed862:mcp_server
+      dockerfile: docker/Dockerfile.standalone
+      args:
+        GRAPHITI_CORE_VERSION: 0.29.3
+        VCS_REF: 993e081a6d7948a0d8851c12a5fbdbeb49fed862
     profiles: ["mcp"]
     env_file:
       - path: .env.local
@@ -29,7 +35,13 @@ services:
     volumes:
       - ./config/graphiti-mcp.yaml:/app/mcp/config/config.yaml:ro
     ports:
-      - "8000:8000"
+      - "8100:8100"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8100/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
     depends_on:
       falkordb:
         condition: service_healthy

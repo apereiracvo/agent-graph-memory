@@ -3,7 +3,7 @@
   "mcp": {
     "graphiti-memory": {
       "type": "remote",
-      "url": "http://localhost:8000/mcp/",
+      "url": "http://localhost:8100/mcp",
       "enabled": true,
       "oauth": false,
       "timeout": 30000

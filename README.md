@@ -94,8 +94,8 @@ is needed, start it and FalkorDB together:
 docker compose --profile mcp up -d
 ```
 
-The MCP endpoint is <http://localhost:8000/mcp/> and its liveness endpoint is
-<http://localhost:8000/health>. Quit and restart OpenCode after starting it so OpenCode reloads the
+The MCP endpoint is <http://localhost:8100/mcp> and its liveness endpoint is
+<http://localhost:8100/health>. Quit and restart OpenCode after starting it so OpenCode reloads the
 project configuration. The MCP tools can add memories, search entities and facts, inspect
 episodes, and clear the graph. `docker compose --profile mcp down` stops both MCP and FalkorDB
 without deleting graph data.
@@ -109,8 +109,9 @@ memory graph. Keep `FALKORDB_DATABASE` equal to it to avoid surprising behavior 
 - `graphiti-core` is pinned in `pyproject.toml`; no Graphiti source checkout or fork is required.
 - `httpx` is declared directly because the `graphiti-core==0.29.3` wheel currently imports it but
   declares the separate `httpx2` distribution.
-- The MCP image is pinned to `zepai/knowledge-graph-mcp:1.0.2-standalone`. Its bundled Graphiti core
-  can lag behind PyPI, but this is the smallest official distributed MCP setup.
+- The MCP image is built directly from pinned official Graphiti commit `993e081`. The build uses
+  `graphiti-core==0.29.3`, avoiding the older core bundled in the published standalone image without
+  cloning or vendoring Graphiti into this repository.
 - `falkordb/falkordb:latest` follows Graphiti's official local setup. Pin it before relying on this
   experiment for repeatable or production workloads.
 - Runtime secrets and local settings live in ignored `.env.local`; `.env.example` is the template.
@@ -118,6 +119,23 @@ memory graph. Keep `FALKORDB_DATABASE` equal to it to avoid surprising behavior 
   be added when the experiment needs Anthropic, Gemini, Azure OpenAI, or a local compatible model.
 - Graphiti has no built-in REST API. If non-MCP HTTP access is needed, add a small application API
   around `graphiti-core` rather than depending on the older separately published server image.
+
+### Models
+
+Configure the current OpenAI setup in `.env.local`:
+
+```dotenv
+# Entity and fact extraction
+MODEL_NAME=gpt-5.6-luna
+
+# Entity and fact embeddings (1536 dimensions in config/graphiti-mcp.yaml)
+EMBEDDER_MODEL=text-embedding-3-small
+```
+
+The MCP server does not currently expose an independent reranker model setting. With OpenAI as the
+LLM provider, Graphiti selects its OpenAI reranker and currently uses `gpt-4.1-nano` internally.
+Changing `MODEL_NAME` does not change that reranker model. Provider selection and embedding
+dimensions are configured in `config/graphiti-mcp.yaml`.
 
 ## Development
 
