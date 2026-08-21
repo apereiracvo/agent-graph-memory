@@ -27,8 +27,8 @@ processes that connect to it, do one job, and exit.
 ### 1. Start The Database
 
 ```bash
-cp .env.example .env
-# Set OPENAI_API_KEY in .env
+cp .env.example .env.local
+# Set OPENAI_API_KEY in .env.local
 docker compose up -d falkordb
 ```
 
@@ -113,6 +113,7 @@ memory graph. Keep `FALKORDB_DATABASE` equal to it to avoid surprising behavior 
   can lag behind PyPI, but this is the smallest official distributed MCP setup.
 - `falkordb/falkordb:latest` follows Graphiti's official local setup. Pin it before relying on this
   experiment for repeatable or production workloads.
+- Runtime secrets and local settings live in ignored `.env.local`; `.env.example` is the template.
 - The current scripts use Graphiti's default OpenAI clients. Provider-specific configuration can
   be added when the experiment needs Anthropic, Gemini, Azure OpenAI, or a local compatible model.
 - Graphiti has no built-in REST API. If non-MCP HTTP access is needed, add a small application API

@@ -1,4 +1,5 @@
 .env
+.env.local
 .git
 .graphiti
 .pytest_cache

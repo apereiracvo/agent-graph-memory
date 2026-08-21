@@ -1,9 +1,11 @@
 services:
   falkordb:
     image: falkordb/falkordb:latest
+    env_file:
+      - path: .env.local
+        required: false
     environment:
       BROWSER: "1"
-      FALKORDB_PASSWORD: ${FALKORDB_PASSWORD:-}
     ports:
       - "6379:6379"
       - "3000:3000"
@@ -19,16 +21,11 @@ services:
     image: zepai/knowledge-graph-mcp:1.0.2-standalone
     profiles: ["mcp"]
     env_file:
-      - path: .env
+      - path: .env.local
         required: false
     environment:
       CONFIG_PATH: /app/mcp/config/config.yaml
       FALKORDB_URI: redis://falkordb:6379
-      FALKORDB_DATABASE: ${GRAPHITI_GROUP_ID:-agent_graph_memory}
-      GRAPHITI_GROUP_ID: ${GRAPHITI_GROUP_ID:-agent_graph_memory}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      OPENAI_API_URL: ${OPENAI_API_URL:-https://api.openai.com/v1}
-      SEMAPHORE_LIMIT: ${SEMAPHORE_LIMIT:-5}
     volumes:
       - ./config/graphiti-mcp.yaml:/app/mcp/config/config.yaml:ro
     ports:
@@ -41,7 +38,7 @@ services:
     build: .
     profiles: ["tools"]
     env_file:
-      - path: .env
+      - path: .env.local
         required: false
     environment:
       FALKORDB_HOST: falkordb

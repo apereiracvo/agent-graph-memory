@@ -13,7 +13,7 @@ from agent_graph_memory.graph import graphiti_client, group_id
 from agent_graph_memory.project import extract_project, read_jsonl, write_jsonl
 
 DEFAULT_EPISODES = Path(".graphiti/episodes.jsonl")
-load_dotenv()
+load_dotenv(".env.local")
 
 
 def _parser() -> argparse.ArgumentParser:
