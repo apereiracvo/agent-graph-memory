@@ -1,0 +1,205 @@
+{
+  "generated_at": "2026-08-21T23:07:23.202150+00:00",
+  "configuration": {
+    "graphiti_core": "0.29.3",
+    "llm_model": "gpt-5.6-luna",
+    "embedding_model": "text-embedding-3-small",
+    "reranker_model": "gpt-4.1-nano (configured but unused by MCP RRF searches)",
+    "database": "FalkorDB",
+    "entity_types": [
+      "Project",
+      "Component",
+      "Technology",
+      "Requirement",
+      "Document",
+      "Person"
+    ]
+  },
+  "pricing_usd_per_million_tokens": {
+    "gpt-5.6-luna_input": 0.2,
+    "gpt-5.6-luna_output": 1.2,
+    "text-embedding-3-small_input": 0.02,
+    "gpt-4.1-nano_input": 0.1,
+    "gpt-4.1-nano_output": 0.4
+  },
+  "provider_reconciliation": {
+    "status": "llm_exact_match_embedding_pending",
+    "gpt-5.6-luna": {
+      "requests": 5,
+      "input_tokens": 13240,
+      "output_tokens": 1017
+    },
+    "text-embedding-3-small": null
+  },
+  "results": [
+    {
+      "scenario": "mid",
+      "description": "Typical project brief with about eight entities and interconnected facts.",
+      "source": {
+        "characters": 8412,
+        "estimated_tokens": 1400
+      },
+      "ingestion": {
+        "seconds": 16.41,
+        "entities": 11,
+        "facts": 12,
+        "llm_calls": 5,
+        "llm_input_tokens": 13240,
+        "llm_output_tokens": 1017,
+        "embedding_requests": 28,
+        "embedding_texts": 70,
+        "embedding_tokens": 428,
+        "estimated_cost_usd": 0.00387696,
+        "prompts": {
+          "extract_nodes.extract_text": {
+            "prompt_name": "extract_nodes.extract_text",
+            "call_count": 1,
+            "total_input_tokens": 2656,
+            "total_output_tokens": 203
+          },
+          "extract_edges.edge": {
+            "prompt_name": "extract_edges.edge",
+            "call_count": 1,
+            "total_input_tokens": 3232,
+            "total_output_tokens": 749
+          },
+          "extract_nodes.extract_attributes": {
+            "prompt_name": "extract_nodes.extract_attributes",
+            "call_count": 3,
+            "total_input_tokens": 7352,
+            "total_output_tokens": 65
+          }
+        }
+      },
+      "queries": {
+        "count": 5,
+        "median_seconds": 0.3238,
+        "p95_seconds": 0.351,
+        "result_counts": [
+          10,
+          10,
+          7,
+          10,
+          10
+        ],
+        "llm_calls": 0,
+        "embedding_requests": 5,
+        "embedding_tokens": 41,
+        "estimated_cost_total_usd": 8.2e-07,
+        "estimated_cost_per_query_usd": 1.64e-07
+      }
+    }
+  ],
+  "estimates": {
+    "low": {
+      "basis": "extrapolated",
+      "source_tokens": 350,
+      "ingestion_cost_usd": 0.00129232,
+      "query_cost_usd": 1.476e-07,
+      "llm_calls": 2,
+      "llm_tokens": 4752,
+      "embedding_tokens": 143,
+      "ingestion_seconds": 5.47
+    },
+    "mid": {
+      "basis": "measured",
+      "source_tokens": 1400,
+      "ingestion_cost_usd": 0.00387696,
+      "query_cost_usd": 1.64e-07,
+      "llm_calls": 5,
+      "llm_tokens": 14257,
+      "embedding_tokens": 428,
+      "ingestion_seconds": 16.41
+    },
+    "high": {
+      "basis": "extrapolated",
+      "source_tokens": 3500,
+      "ingestion_cost_usd": 0.0121155,
+      "query_cost_usd": 1.902e-07,
+      "llm_calls": 16,
+      "llm_tokens": 44553,
+      "embedding_tokens": 1338,
+      "ingestion_seconds": 51.281
+    }
+  },
+  "projections": {
+    "low": {
+      "100": {
+        "ingestion_cost_usd": 0.1292,
+        "queries_equal_to_document_count_cost_usd": 1.5e-05,
+        "sequential_ingestion_hours": 0.15,
+        "llm_calls": 200,
+        "llm_tokens": 475200,
+        "embedding_tokens": 14300
+      },
+      "1000": {
+        "ingestion_cost_usd": 1.2923,
+        "queries_equal_to_document_count_cost_usd": 0.000148,
+        "sequential_ingestion_hours": 1.52,
+        "llm_calls": 2000,
+        "llm_tokens": 4752000,
+        "embedding_tokens": 143000
+      },
+      "10000": {
+        "ingestion_cost_usd": 12.9232,
+        "queries_equal_to_document_count_cost_usd": 0.001476,
+        "sequential_ingestion_hours": 15.19,
+        "llm_calls": 20000,
+        "llm_tokens": 47520000,
+        "embedding_tokens": 1430000
+      }
+    },
+    "mid": {
+      "100": {
+        "ingestion_cost_usd": 0.3877,
+        "queries_equal_to_document_count_cost_usd": 1.6e-05,
+        "sequential_ingestion_hours": 0.46,
+        "llm_calls": 500,
+        "llm_tokens": 1425700,
+        "embedding_tokens": 42800
+      },
+      "1000": {
+        "ingestion_cost_usd": 3.877,
+        "queries_equal_to_document_count_cost_usd": 0.000164,
+        "sequential_ingestion_hours": 4.56,
+        "llm_calls": 5000,
+        "llm_tokens": 14257000,
+        "embedding_tokens": 428000
+      },
+      "10000": {
+        "ingestion_cost_usd": 38.7696,
+        "queries_equal_to_document_count_cost_usd": 0.00164,
+        "sequential_ingestion_hours": 45.58,
+        "llm_calls": 50000,
+        "llm_tokens": 142570000,
+        "embedding_tokens": 4280000
+      }
+    },
+    "high": {
+      "100": {
+        "ingestion_cost_usd": 1.2115,
+        "queries_equal_to_document_count_cost_usd": 1.9e-05,
+        "sequential_ingestion_hours": 1.42,
+        "llm_calls": 1600,
+        "llm_tokens": 4455300,
+        "embedding_tokens": 133800
+      },
+      "1000": {
+        "ingestion_cost_usd": 12.1155,
+        "queries_equal_to_document_count_cost_usd": 0.00019,
+        "sequential_ingestion_hours": 14.24,
+        "llm_calls": 16000,
+        "llm_tokens": 44553000,
+        "embedding_tokens": 1338000
+      },
+      "10000": {
+        "ingestion_cost_usd": 121.155,
+        "queries_equal_to_document_count_cost_usd": 0.001902,
+        "sequential_ingestion_hours": 142.45,
+        "llm_calls": 160000,
+        "llm_tokens": 445530000,
+        "embedding_tokens": 13380000
+      }
+    }
+  }
+}

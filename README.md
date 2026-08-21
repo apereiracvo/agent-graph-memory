@@ -149,6 +149,16 @@ uv run ruff check .
 docker compose config
 ```
 
+Run the bounded cost benchmark and regenerate volume projections:
+
+```bash
+uv run graph-memory benchmark --output-dir reports
+```
+
+The benchmark measures one representative medium episode with the deployed model and entity types,
+then extrapolates low/high planning bands. It cleans up its isolated FalkorDB graph after completion.
+See the latest report under `reports/` for methodology, public benchmark context, and caveats.
+
 Official references: [Graphiti repository](https://github.com/getzep/graphiti),
 [Graphiti PyPI package](https://pypi.org/project/graphiti-core/), and
 [Graphiti MCP server](https://github.com/getzep/graphiti/tree/main/mcp_server).

@@ -32,6 +32,9 @@ def _parser() -> argparse.ArgumentParser:
     query = commands.add_parser("query", help="Search facts in the project graph")
     query.add_argument("text")
     query.add_argument("--limit", type=int, default=10)
+
+    benchmark = commands.add_parser("benchmark", help="Measure and project Graphiti API costs")
+    benchmark.add_argument("--output-dir", type=Path, default=Path("reports"))
     return parser
 
 
@@ -80,6 +83,11 @@ def main() -> None:
         asyncio.run(_ingest(args.episodes, args.limit))
     elif args.command == "query":
         asyncio.run(_query(args.text, args.limit))
+    elif args.command == "benchmark":
+        from agent_graph_memory.benchmark import run_benchmark
+
+        json_path, markdown_path = asyncio.run(run_benchmark(args.output_dir))
+        print(f"Wrote {json_path} and {markdown_path}")
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ services:
         required: false
     environment:
       BROWSER: "1"
+      OPENAI_ADMIN_KEY: ""
     ports:
       - "6379:6379"
       - "3000:3000"
@@ -32,6 +33,7 @@ services:
     environment:
       CONFIG_PATH: /app/mcp/config/config.yaml
       FALKORDB_URI: redis://falkordb:6379
+      OPENAI_ADMIN_KEY: ""
     command:
       - sh
       - -c
@@ -61,6 +63,7 @@ services:
         required: false
     environment:
       FALKORDB_HOST: falkordb
+      OPENAI_ADMIN_KEY: ""
       PYTHONPATH: /workspace/src
     volumes:
       - .:/workspace
