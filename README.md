@@ -159,6 +159,9 @@ The benchmark measures one representative medium episode with the deployed model
 then extrapolates low/high planning bands. It cleans up its isolated FalkorDB graph after completion.
 See the latest report under `reports/` for methodology, public benchmark context, and caveats.
 
+See `docs/falkordb-performance.md` for the confirmed FalkorDB full-text query bottleneck, local
+before/after measurements, the applied upstream patch, and remaining scaling limits.
+
 Official references: [Graphiti repository](https://github.com/getzep/graphiti),
 [Graphiti PyPI package](https://pypi.org/project/graphiti-core/), and
 [Graphiti MCP server](https://github.com/getzep/graphiti/tree/main/mcp_server).

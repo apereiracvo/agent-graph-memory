@@ -1,6 +1,6 @@
 services:
   falkordb:
-    image: falkordb/falkordb:latest
+    image: falkordb/falkordb@sha256:adbddd418916c25618564ff8597a919b08bc76452ebeb74eb985c38d7281df62
     env_file:
       - path: .env.local
         required: false
@@ -38,11 +38,14 @@ services:
       - sh
       - -c
       - >-
-        sed -i "s/model.startswith('gpt-5.5')/model.startswith(('gpt-5.5', 'gpt-5.6'))/"
-        /app/mcp/src/services/factories.py &&
+        PYTHONPATH=/workspace/src uv run --no-project python /workspace/scripts/patch_graphiti.py
+        --graphiti-root /app/mcp/.venv/lib/python3.11/site-packages/graphiti_core
+        --mcp-root /app/mcp &&
         uv run --no-sync main.py
     volumes:
       - ./config/graphiti-mcp.yaml:/app/mcp/config/config.yaml:ro
+      - ./scripts:/workspace/scripts:ro
+      - ./src:/workspace/src:ro
     ports:
       - "8100:8100"
     healthcheck:

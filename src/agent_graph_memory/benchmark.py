@@ -484,7 +484,7 @@ def _markdown(report: dict[str, Any]) -> str:
             "- `low`, `mid`, and `high` are planning bands, not statistical confidence bounds. Only mid is directly measured by the command.",
             "- Multiple exploratory runs showed stable low/mid costs, but repeat production-shaped runs are still needed for formal confidence intervals.",
             "- Measurements use empty isolated graphs. Warm graphs can require entity/fact deduplication and contradiction calls, so production ingestion may cost more.",
-            "- Dense high-profile ingestion repeatedly exceeded three minutes in FalkorDB semantic candidate search. High cost is extrapolated and its time projection excludes that backend pathology.",
+            "- Before applying Graphiti PR #1711, dense ingestion repeatedly exceeded three minutes while FalkorDB was processing pathological edge full-text endpoint scans. High remains extrapolated for stable, bounded benchmark runs.",
             "- Ingestion cost depends more on extracted entities, facts, deduplication candidates, and history than raw text size alone.",
             "- Standard MCP fact search uses hybrid RRF and normally incurs one query embedding, with no extraction LLM or OpenAI reranker call.",
             "- Query cost is OpenAI API cost only; local FalkorDB compute is not monetized.",
