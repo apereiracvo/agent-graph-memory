@@ -126,7 +126,7 @@ Configure the current OpenAI setup in `.env.local`:
 
 ```dotenv
 # Entity and fact extraction
-MODEL_NAME=gpt-5.6-luna
+MODEL_NAME=gpt-4.1-nano
 
 # Entity and fact embeddings (1536 dimensions in config/graphiti-mcp.yaml)
 EMBEDDER_MODEL=text-embedding-3-small
@@ -137,9 +137,9 @@ LLM provider, Graphiti selects its OpenAI reranker and currently uses `gpt-4.1-n
 Changing `MODEL_NAME` does not change that reranker model. Provider selection and embedding
 dimensions are configured in `config/graphiti-mcp.yaml`.
 
-Graphiti `0.29.3` predates `gpt-5.6` and otherwise sends the unsupported reasoning effort
-`minimal`. The MCP container startup applies a one-line compatibility patch that selects `none`
-for the `gpt-5.6` family. Remove it once an upstream release recognizes these models.
+The retained compatibility patch also recognizes the `gpt-5.6` family and selects reasoning effort
+`none`. It is inactive while `MODEL_NAME=gpt-4.1-nano`, but allows switching back without rebuilding
+or changing source.
 
 ## Development
 
@@ -149,15 +149,15 @@ uv run ruff check .
 docker compose config
 ```
 
-Run the bounded cost benchmark and regenerate volume projections:
+Run the Luna-pinned bounded cost benchmark and regenerate volume projections:
 
 ```bash
-uv run graph-memory benchmark --output-dir reports
+MODEL_NAME=gpt-5.6-luna uv run graph-memory benchmark --output-dir reports
 ```
 
-The benchmark measures one representative medium episode with the deployed model and entity types,
-then extrapolates low/high planning bands. It cleans up its isolated FalkorDB graph after completion.
-See the latest report under `reports/` for methodology, public benchmark context, and caveats.
+The benchmark measures one representative medium episode with `gpt-5.6-luna` and the deployed entity
+types, then extrapolates low/high planning bands. It cleans up its isolated FalkorDB graph after
+completion. Existing reports under `reports/` are historical Luna results, not nano measurements.
 
 See `docs/falkordb-performance.md` for the confirmed FalkorDB full-text query bottleneck, local
 before/after measurements, the applied upstream patch, and remaining scaling limits.
