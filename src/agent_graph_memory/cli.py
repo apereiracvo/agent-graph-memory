@@ -11,13 +11,6 @@ from dotenv import load_dotenv
 DEFAULT_EPISODES = Path(".graphiti/episodes.jsonl")
 load_dotenv(".env.local")
 
-from agent_graph_memory.compat import patch_graphiti_core
-
-patch_graphiti_core()
-
-from graphiti_core.nodes import EpisodeType
-
-from agent_graph_memory.graph import graphiti_client, group_id
 from agent_graph_memory.project import extract_project, read_jsonl, write_jsonl
 
 
@@ -40,6 +33,17 @@ def _parser() -> argparse.ArgumentParser:
 
     benchmark = commands.add_parser("benchmark", help="Measure and project Graphiti API costs")
     benchmark.add_argument("--output-dir", type=Path, default=Path("reports"))
+
+    falkordb = commands.add_parser(
+        "benchmark-falkordb", help="Benchmark Graphiti's zero-OpenAI FalkorDB hot paths"
+    )
+    falkordb.add_argument("--output-dir", type=Path, default=Path("reports"))
+    falkordb.add_argument("--plateaus", default="100,500,1000,2500,5000,10000")
+    falkordb.add_argument("--warmups", type=int, default=2)
+    falkordb.add_argument("--samples", type=int, default=5)
+    falkordb.add_argument("--query-timeout-ms", type=int, default=30_000)
+    falkordb.add_argument("--batch-size", type=int, default=100)
+    falkordb.add_argument("--limit", type=int, default=20)
     return parser
 
 
@@ -49,6 +53,13 @@ def _require_openai_key() -> None:
 
 
 async def _ingest(path: Path, limit: int | None) -> None:
+    from agent_graph_memory.compat import patch_graphiti_core
+
+    patch_graphiti_core()
+    from graphiti_core.nodes import EpisodeType
+
+    from agent_graph_memory.graph import graphiti_client, group_id
+
     _require_openai_key()
     episodes = list(read_jsonl(path))
     if limit is not None:
@@ -67,6 +78,11 @@ async def _ingest(path: Path, limit: int | None) -> None:
 
 
 async def _query(text: str, limit: int) -> None:
+    from agent_graph_memory.compat import patch_graphiti_core
+
+    patch_graphiti_core()
+    from agent_graph_memory.graph import graphiti_client, group_id
+
     _require_openai_key()
     async with graphiti_client() as client:
         results = await client.search(text, group_ids=[group_id()], num_results=limit)
@@ -89,9 +105,29 @@ def main() -> None:
     elif args.command == "query":
         asyncio.run(_query(args.text, args.limit))
     elif args.command == "benchmark":
+        from agent_graph_memory.compat import patch_graphiti_core
+
+        patch_graphiti_core()
         from agent_graph_memory.benchmark import run_benchmark
 
         json_path, markdown_path = asyncio.run(run_benchmark(args.output_dir))
+        print(f"Wrote {json_path} and {markdown_path}")
+    elif args.command == "benchmark-falkordb":
+        from agent_graph_memory.falkordb_hotpath_benchmark import run_benchmark
+
+        try:
+            plateaus = tuple(int(value.strip()) for value in args.plateaus.split(","))
+        except ValueError as exc:
+            raise SystemExit("--plateaus must be a comma-separated list of integers") from exc
+        json_path, markdown_path = run_benchmark(
+            args.output_dir,
+            plateaus=plateaus,
+            warmups=args.warmups,
+            samples=args.samples,
+            query_timeout_ms=args.query_timeout_ms,
+            batch_size=args.batch_size,
+            limit=args.limit,
+        )
         print(f"Wrote {json_path} and {markdown_path}")
 
 

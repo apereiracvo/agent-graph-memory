@@ -159,8 +159,22 @@ The benchmark measures one representative medium episode with `gpt-5.6-luna` and
 types, then extrapolates low/high planning bands. It cleans up its isolated FalkorDB graph after
 completion. Existing reports under `reports/` are historical Luna results, not nano measurements.
 
+Run the zero-OpenAI FalkorDB hot-path growth benchmark against the configured local database:
+
+```bash
+uv run graph-memory benchmark-falkordb --samples 7 --output-dir reports
+```
+
+It creates, measures, and verifies deletion of one isolated benchmark graph. See the
+[Graphiti growth forecast](docs/graphiti-growth-forecast.md) for the combined API-cost and measured
+database-growth forecast.
+
 See `docs/falkordb-performance.md` for the confirmed FalkorDB full-text query bottleneck, local
 before/after measurements, the applied upstream patch, and remaining scaling limits.
+
+See `docs/graphiti-scaling.md` for the complete ingestion and query scaling analysis, expected
+performance bands, production configuration, load-test plan, and provisional SLOs. See
+`docs/falkordb-vs-neo4j.md` for the production-focused backend comparison and decision criteria.
 
 Official references: [Graphiti repository](https://github.com/getzep/graphiti),
 [Graphiti PyPI package](https://pypi.org/project/graphiti-core/), and
