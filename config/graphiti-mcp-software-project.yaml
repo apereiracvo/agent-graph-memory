@@ -1,0 +1,50 @@
+server:
+  transport: http
+  host: 0.0.0.0
+  port: 8100
+
+llm:
+  provider: openai
+  model: ${MODEL_NAME:gpt-4.1-nano}
+  max_tokens: 4096
+  structured_output_mode: ${LLM_STRUCTURED_OUTPUT_MODE:json_schema}
+  providers:
+    openai:
+      api_key: ${OPENAI_API_KEY}
+      api_url: ${OPENAI_API_URL:https://api.openai.com/v1}
+      organization_id: ${OPENAI_ORGANIZATION_ID:}
+
+embedder:
+  provider: openai
+  model: ${EMBEDDER_MODEL:text-embedding-3-small}
+  dimensions: 1536
+  providers:
+    openai:
+      api_key: ${OPENAI_API_KEY}
+      api_url: ${OPENAI_API_URL:https://api.openai.com/v1}
+      organization_id: ${OPENAI_ORGANIZATION_ID:}
+
+database:
+  provider: falkordb
+  providers:
+    falkordb:
+      uri: ${FALKORDB_URI:redis://falkordb:6379}
+      password: ${FALKORDB_PASSWORD:}
+      database: ${FALKORDB_DATABASE:agent_graph_memory}
+
+graphiti:
+  group_id: ${GRAPHITI_GROUP_ID:agent_graph_memory}
+  user_id: ${USER_ID:opencode}
+  entity_types:
+    - name: Project
+      description: A software project or repository.
+    - name: Component
+      description: A module, package, service, or other architectural component.
+    - name: Technology
+      description: A language, framework, library, database, protocol, or tool.
+    - name: Requirement
+      description: A required behavior, constraint, or design decision.
+    - name: Document
+      description: A source file or documentation artifact.
+    - name: Person
+      description: An individual referenced by the project.

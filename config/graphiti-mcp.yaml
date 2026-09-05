@@ -33,18 +33,674 @@ database:
       database: ${FALKORDB_DATABASE:agent_graph_memory}
 
 graphiti:
-  group_id: ${GRAPHITI_GROUP_ID:agent_graph_memory}
+  group_id: ${GRAPHITI_GROUP_ID:hellopeds_company_product_v1}
   user_id: ${USER_ID:opencode}
   entity_types:
-    - name: Project
-      description: A software project or repository.
-    - name: Component
-      description: A module, package, service, or other architectural component.
-    - name: Technology
-      description: A language, framework, library, database, protocol, or tool.
-    - name: Requirement
-      description: A required behavior, constraint, or design decision.
-    - name: Document
-      description: A source file or documentation artifact.
     - name: Person
-      description: An individual referenced by the project.
+      description: A named or otherwise identifiable human individual; not a role, position, title, team, account, principal, or source mention.
+    - name: Collective
+      description: A named organization or organized collection of people, including an enterprise, unit, department, team, committee, partner, or legal entity; not a tenant, segment, role, or generated grouping.
+    - name: Role
+      description: A reusable capacity, responsibility-bearing role, or persistent organizational position that may have occupants; not the person, title text, account, permission, team, or skill.
+    - name: Activity
+      description: An identifiable company process, activity, event, decision occurrence, initiative, project, training activity, or work occurrence; not its document, actor, output, outcome, or every verb.
+    - name: Resource
+      description: An identifiable thing used, produced, managed, offered, or referenced by company work, such as a document, dataset, asset, deliverable, location, option, product, or service; not a person, collective, role, directive, objective, or source assertion merely because it is stored.
+    - name: Directive
+      description: Identifiable company-level normative or constraining content such as a policy, rule, requirement, standard, obligation, permission, prohibition, or exception; not its carrier, authority proof, enforcement, behavior, or compliance result.
+    - name: Objective
+      description: An identifiable desired, evaluative, or measurable company construct such as a goal, priority, intended outcome, capability, metric definition, target, or criterion; not an observation, generated status, output, or proven impact.
+    - name: Concern
+      description: An identifiable company risk, issue, opportunity, incident concern, constraint, assumption, tension, or unresolved question; not an automatically verified cause, violation, score, or current truth.
+    - name: Product
+      description: A named coherent product-level value proposition or product boundary with an independent lifecycle or navigation need; not a technical application, feature, external offering, plan, release, or company collective.
+    - name: Capability
+      description: A reusable product or business ability that can address needs through features, use cases, or workflows; not a feature, technical component, team ability, observed performance, or outcome.
+    - name: Feature
+      description: A distinguishable product-facing function or behavior made available within a product; not a capability, use case, UI component, endpoint, configuration switch, or implementation unit.
+    - name: Need
+      description: An identifiable problem, demand, desired condition, or job to be addressed for an actor context; not a requirement specification, policy, solution, feature, metric, or complaint occurrence.
+    - name: UseCase
+      description: A named goal-oriented interaction or scenario connecting an actor context to product behavior; not an actual session, user-story document, technical implementation, route, test case, or outcome observation.
+    - name: BusinessWorkflow
+      description: A reusable product or business flow of activities, decisions, and handoffs used to fulfill a use case or deliver behavior; not a technical workflow implementation, job, process run, configuration, or log.
+    - name: Actor
+      description: A product-relevant participant category, party, or non-human interacting role; not a named person, company collective, account, authenticated principal, permission, or service process.
+    - name: InformationSource
+      description: A named logical information basis, reference, or information product at business-meaning grain; not a file, rendition, prompt body, data-store table, provider payload, source assertion, or evidence record.
+    - name: Outcome
+      description: An identifiable desired or realized product or business state or effect meaningful independently of a produced output; not an artifact, target value, metric definition, score, evaluation result, or causal proof.
+    - name: Policy
+      description: A product or business rule, constraint, eligibility condition, or directive governing product behavior or use; not enforcement code, configuration, access decision, carrier document, observed compliance, or company-model Directive.
+    - name: ExternalOffering
+      description: A named externally supplied product, service, data offering, or integration-facing offering relevant to the product boundary; not the product, a technical provider client, contract file, call occurrence, or enablement proof.
+
+  edge_types:
+    - name: C_PART_OF
+      description: "C:PART_OF. Company-level typed composition; not formal reporting. Direction is part to whole."
+    - name: C_REPORTS_TO
+      description: "C:REPORTS_TO. Formal reporting between people or roles; not generic composition, authority, or collaboration."
+    - name: C_MEMBER_OF
+      description: "C:MEMBER_OF. Company membership; not role performance, participation, or reporting."
+    - name: C_PERFORMS_ROLE
+      description: "C:PERFORMS_ROLE. A person, collective, or explicit non-human resource performs a reusable company Role; do not merge performer and role."
+    - name: C_PARTICIPATES_IN
+      description: "C:PARTICIPATES_IN. A company participant takes part in an Activity; participation is not responsibility, authority, or execution proof."
+    - name: C_RESPONSIBLE_FOR
+      description: "C:RESPONSIBLE_FOR. A stated company duty; not answerability, authority, ownership, or governance."
+    - name: C_ACCOUNTABLE_FOR
+      description: "C:ACCOUNTABLE_FOR. Stated company answerability; not responsibility, authority, ownership, or governance."
+    - name: C_AUTHORIZED_FOR
+      description: "C:AUTHORIZED_FOR. Stated legitimate company authority; not an access decision, responsibility, ownership, or governance."
+    - name: C_OWNS
+      description: "C:OWNS. Explicit company ownership or stewardship only when source meaning is unambiguous; not responsibility, accountability, or governance."
+    - name: C_GOVERNS
+      description: "C:GOVERNS. Explicit company governance by a Person, Collective, or Role; not product Policy governance, ownership, authority, enforcement, or compliance."
+    - name: C_PRECEDES
+      description: "C:PRECEDES. One company Activity precedes another; sequence is not causation and is not automatically transitive."
+    - name: C_PRODUCES
+      description: "C:PRODUCES. A company Activity produces a Resource or Objective; production is not use or outcome attainment."
+    - name: C_USES
+      description: "C:USES. A company entity uses a Resource; this is not product information use, ownership, or proof of a use occurrence."
+    - name: C_DEPENDS_ON
+      description: "C:DEPENDS_ON. Explicit company-level required reliance; not product dependency, sequence, causation, or transitive closure."
+    - name: C_SUPPORTS
+      description: "C:SUPPORTS. Explicit company-level positive contribution; not product dependency, causation, or outcome proof."
+    - name: C_COLLABORATES_WITH
+      description: "C:COLLABORATES_WITH. Explicit joint company work; not reporting, authority, membership, or inferred influence."
+    - name: C_DOCUMENTS
+      description: "C:DOCUMENTS. A company Resource records or describes another company entity; documentation does not establish truth, authority, or execution."
+    - name: C_APPLIES_TO
+      description: "C:APPLIES_TO. A company Directive applies to a company entity; applicability does not establish an obligation or enforcement."
+    - name: C_REQUIRES
+      description: "C:REQUIRES. A company Directive states required content, action, or condition; not operational dependency, enforcement, satisfaction, or an inferred obligated subject."
+    - name: C_MEASURES
+      description: "C:MEASURES. A metric-like company Objective measures a company entity or construct; not an observation or target attainment."
+    - name: B_INCLUDES_FEATURE
+      description: "B:INCLUDES_FEATURE. A Product includes a distinguishable Feature; not capability realization or technical composition."
+    - name: B_OFFERS_CAPABILITY
+      description: "B:OFFERS_CAPABILITY. A Product or ExternalOffering makes a Capability available; not proof of use or outcome."
+    - name: B_DEFINES_USE_CASE
+      description: "B:DEFINES_USE_CASE. A Product, Capability, or Feature has a named UseCase; not actor participation."
+    - name: B_REALIZES_USE_CASE
+      description: "B:REALIZES_USE_CASE. A BusinessWorkflow performs the business flow for a UseCase; not technical realization."
+    - name: B_COMPOSED_OF
+      description: "B:COMPOSED_OF. One reusable BusinessWorkflow is structurally composed of another; do not infer transitivity."
+    - name: B_PARTICIPATES_IN
+      description: "B:PARTICIPATES_IN. An Actor category takes part in a UseCase or BusinessWorkflow; not identity, account access, or execution."
+    - name: B_SERVES
+      description: "B:SERVES. A Product, Capability, Feature, or UseCase is intended for an Actor category; not the inverse of participation."
+    - name: B_ADDRESSES
+      description: "B:ADDRESSES. A product concept is intended to address a Need; not proof that the need is met."
+    - name: B_USES_INFORMATION
+      description: "B:USES_INFORMATION. A product behavior uses a logical InformationSource; not storage, source authority, or access approval."
+    - name: B_USES_EXTERNAL_OFFERING
+      description: "B:USES_EXTERNAL_OFFERING. A product concept depends on or incorporates an ExternalOffering at product grain; not a technical-provider invocation."
+    - name: B_PRODUCES_OUTCOME
+      description: "B:PRODUCES_OUTCOME. A product behavior is intended or asserted to produce an Outcome; never imply a realized effect."
+    - name: B_GOVERNS
+      description: "B:GOVERNS. A product Policy governs a product concept; not company governance, enforcement, or compliance."
+    - name: B_DEPENDS_ON
+      description: "B:DEPENDS_ON. Explicit product or business reliance between product concepts; not company dependency, sequence, causation, ownership, or policy force."
+
+  # Explicit ordered pairs only. Do not add Entity wildcard mappings: every custom node also has
+  # Graphiti's base Entity label, so a wildcard would expose controlled relations across C and B.
+  edge_type_map:
+    # Company C-to-C pairs. C_DEPENDS_ON is intentionally available for every ordered C pair.
+    - source: Person
+      target: Person
+      edge_types: [C_DEPENDS_ON, C_REPORTS_TO, C_COLLABORATES_WITH]
+    - source: Person
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_MEMBER_OF, C_COLLABORATES_WITH]
+    - source: Person
+      target: Role
+      edge_types: [C_DEPENDS_ON, C_REPORTS_TO, C_PERFORMS_ROLE, C_COLLABORATES_WITH]
+    - source: Person
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_PARTICIPATES_IN, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Person
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_USES, C_SUPPORTS]
+    - source: Person
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Person
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Person
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Collective
+      target: Person
+      edge_types: [C_DEPENDS_ON, C_COLLABORATES_WITH]
+    - source: Collective
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_PART_OF, C_MEMBER_OF, C_OWNS, C_GOVERNS, C_SUPPORTS, C_COLLABORATES_WITH]
+    - source: Collective
+      target: Role
+      edge_types: [C_DEPENDS_ON, C_PERFORMS_ROLE, C_COLLABORATES_WITH]
+    - source: Collective
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_PARTICIPATES_IN, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Collective
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_USES, C_SUPPORTS]
+    - source: Collective
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Collective
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Collective
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Role
+      target: Person
+      edge_types: [C_DEPENDS_ON, C_REPORTS_TO, C_COLLABORATES_WITH]
+    - source: Role
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_PART_OF, C_OWNS, C_GOVERNS, C_SUPPORTS, C_COLLABORATES_WITH]
+    - source: Role
+      target: Role
+      edge_types: [C_DEPENDS_ON, C_REPORTS_TO, C_COLLABORATES_WITH]
+    - source: Role
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_PARTICIPATES_IN, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Role
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_USES, C_SUPPORTS]
+    - source: Role
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Role
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Role
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_RESPONSIBLE_FOR, C_ACCOUNTABLE_FOR, C_AUTHORIZED_FOR, C_OWNS, C_GOVERNS, C_SUPPORTS]
+    - source: Activity
+      target: Person
+      edge_types: [C_DEPENDS_ON]
+    - source: Activity
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Activity
+      target: Role
+      edge_types: [C_DEPENDS_ON]
+    - source: Activity
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_PART_OF, C_PRECEDES, C_SUPPORTS]
+    - source: Activity
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_PRODUCES, C_USES, C_SUPPORTS]
+    - source: Activity
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Activity
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_PRODUCES, C_SUPPORTS]
+    - source: Activity
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Resource
+      target: Person
+      edge_types: [C_DEPENDS_ON, C_DOCUMENTS]
+    - source: Resource
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_DOCUMENTS]
+    - source: Resource
+      target: Role
+      edge_types: [C_DEPENDS_ON, C_PERFORMS_ROLE, C_DOCUMENTS]
+    - source: Resource
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_PARTICIPATES_IN, C_SUPPORTS, C_DOCUMENTS]
+    - source: Resource
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_PART_OF, C_USES, C_SUPPORTS, C_DOCUMENTS]
+    - source: Resource
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_DOCUMENTS]
+    - source: Resource
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_DOCUMENTS]
+    - source: Resource
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_DOCUMENTS]
+    - source: Directive
+      target: Person
+      edge_types: [C_DEPENDS_ON, C_APPLIES_TO]
+    - source: Directive
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_APPLIES_TO]
+    - source: Directive
+      target: Role
+      edge_types: [C_DEPENDS_ON, C_APPLIES_TO]
+    - source: Directive
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_APPLIES_TO, C_REQUIRES]
+    - source: Directive
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_APPLIES_TO, C_REQUIRES]
+    - source: Directive
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_APPLIES_TO, C_REQUIRES]
+    - source: Directive
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_APPLIES_TO, C_REQUIRES]
+    - source: Directive
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_APPLIES_TO]
+    - source: Objective
+      target: Person
+      edge_types: [C_DEPENDS_ON, C_MEASURES]
+    - source: Objective
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_MEASURES]
+    - source: Objective
+      target: Role
+      edge_types: [C_DEPENDS_ON, C_MEASURES]
+    - source: Objective
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_MEASURES]
+    - source: Objective
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_MEASURES]
+    - source: Objective
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_MEASURES]
+    - source: Objective
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_PART_OF, C_SUPPORTS, C_MEASURES]
+    - source: Objective
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS, C_MEASURES]
+    - source: Concern
+      target: Person
+      edge_types: [C_DEPENDS_ON]
+    - source: Concern
+      target: Collective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Concern
+      target: Role
+      edge_types: [C_DEPENDS_ON]
+    - source: Concern
+      target: Activity
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Concern
+      target: Resource
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Concern
+      target: Directive
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Concern
+      target: Objective
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+    - source: Concern
+      target: Concern
+      edge_types: [C_DEPENDS_ON, C_SUPPORTS]
+
+    # Product B-to-B pairs. B_DEPENDS_ON is intentionally available for every ordered B pair.
+    - source: Product
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: Product
+      target: Capability
+      edge_types: [B_DEPENDS_ON, B_OFFERS_CAPABILITY]
+    - source: Product
+      target: Feature
+      edge_types: [B_DEPENDS_ON, B_INCLUDES_FEATURE]
+    - source: Product
+      target: Need
+      edge_types: [B_DEPENDS_ON, B_ADDRESSES]
+    - source: Product
+      target: UseCase
+      edge_types: [B_DEPENDS_ON, B_DEFINES_USE_CASE]
+    - source: Product
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: Product
+      target: Actor
+      edge_types: [B_DEPENDS_ON, B_SERVES]
+    - source: Product
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON, B_USES_INFORMATION]
+    - source: Product
+      target: Outcome
+      edge_types: [B_DEPENDS_ON, B_PRODUCES_OUTCOME]
+    - source: Product
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: Product
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON, B_USES_EXTERNAL_OFFERING]
+    - source: Capability
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: Capability
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: Capability
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: Capability
+      target: Need
+      edge_types: [B_DEPENDS_ON, B_ADDRESSES]
+    - source: Capability
+      target: UseCase
+      edge_types: [B_DEPENDS_ON, B_DEFINES_USE_CASE]
+    - source: Capability
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: Capability
+      target: Actor
+      edge_types: [B_DEPENDS_ON, B_SERVES]
+    - source: Capability
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON]
+    - source: Capability
+      target: Outcome
+      edge_types: [B_DEPENDS_ON, B_PRODUCES_OUTCOME]
+    - source: Capability
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: Capability
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON, B_USES_EXTERNAL_OFFERING]
+    - source: Feature
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: Feature
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: Feature
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: Feature
+      target: Need
+      edge_types: [B_DEPENDS_ON, B_ADDRESSES]
+    - source: Feature
+      target: UseCase
+      edge_types: [B_DEPENDS_ON, B_DEFINES_USE_CASE]
+    - source: Feature
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: Feature
+      target: Actor
+      edge_types: [B_DEPENDS_ON, B_SERVES]
+    - source: Feature
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON, B_USES_INFORMATION]
+    - source: Feature
+      target: Outcome
+      edge_types: [B_DEPENDS_ON, B_PRODUCES_OUTCOME]
+    - source: Feature
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: Feature
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON, B_USES_EXTERNAL_OFFERING]
+    - source: Need
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: Need
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: UseCase
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: Actor
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: Outcome
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: Need
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON]
+    - source: UseCase
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: UseCase
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: UseCase
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: UseCase
+      target: Need
+      edge_types: [B_DEPENDS_ON, B_ADDRESSES]
+    - source: UseCase
+      target: UseCase
+      edge_types: [B_DEPENDS_ON]
+    - source: UseCase
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: UseCase
+      target: Actor
+      edge_types: [B_DEPENDS_ON, B_SERVES]
+    - source: UseCase
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON, B_USES_INFORMATION]
+    - source: UseCase
+      target: Outcome
+      edge_types: [B_DEPENDS_ON, B_PRODUCES_OUTCOME]
+    - source: UseCase
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: UseCase
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON]
+    - source: BusinessWorkflow
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: BusinessWorkflow
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: BusinessWorkflow
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: BusinessWorkflow
+      target: Need
+      edge_types: [B_DEPENDS_ON, B_ADDRESSES]
+    - source: BusinessWorkflow
+      target: UseCase
+      edge_types: [B_DEPENDS_ON, B_REALIZES_USE_CASE]
+    - source: BusinessWorkflow
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON, B_COMPOSED_OF]
+    - source: BusinessWorkflow
+      target: Actor
+      edge_types: [B_DEPENDS_ON]
+    - source: BusinessWorkflow
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON, B_USES_INFORMATION]
+    - source: BusinessWorkflow
+      target: Outcome
+      edge_types: [B_DEPENDS_ON, B_PRODUCES_OUTCOME]
+    - source: BusinessWorkflow
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: BusinessWorkflow
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON, B_USES_EXTERNAL_OFFERING]
+    - source: Actor
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: Need
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: UseCase
+      edge_types: [B_DEPENDS_ON, B_PARTICIPATES_IN]
+    - source: Actor
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON, B_PARTICIPATES_IN]
+    - source: Actor
+      target: Actor
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: Outcome
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: Actor
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: Need
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: UseCase
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: Actor
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: Outcome
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: InformationSource
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: Capability
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: Need
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: UseCase
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: Actor
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: Outcome
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: Outcome
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON]
+    - source: Policy
+      target: Product
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: Capability
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: Feature
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: Need
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: UseCase
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: Actor
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: Outcome
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: Policy
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: Policy
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON, B_GOVERNS]
+    - source: ExternalOffering
+      target: Product
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: Capability
+      edge_types: [B_DEPENDS_ON, B_OFFERS_CAPABILITY]
+    - source: ExternalOffering
+      target: Feature
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: Need
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: UseCase
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: BusinessWorkflow
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: Actor
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: InformationSource
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: Outcome
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: Policy
+      edge_types: [B_DEPENDS_ON]
+    - source: ExternalOffering
+      target: ExternalOffering
+      edge_types: [B_DEPENDS_ON]
