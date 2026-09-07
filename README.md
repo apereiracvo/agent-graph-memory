@@ -144,10 +144,12 @@ or changing source.
 ## Development
 
 ```bash
-uv run pytest
-uv run ruff check .
+uv run pytest tests
+uv run ruff check src tests
 docker compose config
 ```
+
+`uv run pytest tests` and `uv run ruff check src tests` deliberately scope the main path: `cognee_bench/` is not part of the `uv` project and its suite runs only in the isolated `.venv-cognee` (`PYTHONPATH=. .venv-cognee/bin/python -m pytest cognee_bench/tests -q`).
 
 Run the Luna-pinned bounded cost benchmark and regenerate volume projections:
 
