@@ -153,6 +153,9 @@ activemq-data/
 .graphiti/
 .mcp/
 .envrc
+
+# Agent workbooks and temporary documentation
+/docs/temp/
 .venv
 env/
 venv/
